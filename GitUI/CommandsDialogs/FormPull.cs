@@ -673,7 +673,7 @@ namespace GitUI.CommandsDialogs
 
             Debug.Assert(Merge.Checked || Rebase.Checked, "Merge.Checked || Rebase.Checked");
 
-            return new FormRemoteProcess(UICommands, process: null, Module.PullCmd(source, curRemoteBranch, Rebase.Checked, GetTagsArg(), Unshallow.Checked))
+            return new FormMergeRemoteProcess(UICommands, process: null, Module.PullCmd(source, curRemoteBranch, Rebase.Checked, GetTagsArg(), Unshallow.Checked))
             {
                 HandleOnExitCallback = HandlePullOnExit
             };
