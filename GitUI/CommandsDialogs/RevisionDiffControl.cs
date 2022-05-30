@@ -438,8 +438,45 @@ namespace GitUI.CommandsDialogs
 
         private async Task ShowSelectedFileDiffAsync()
         {
+            if (IsUnityFile())
+            {
+                var filePath = Module.WorkingDir + DiffFiles.SelectedItem.Item.Name.ToNativePath();
+                if (!File.Exists(filePath))
+                {
+                    await DiffText.ViewChangesAsync(null, " Viewing Unity files that are not in the current branch is not supported.");
+                    return;
+                }
+                else
+                {
+                    const long maxLength = 5 * 1024 * 1024;
+
+                    var fileSize = new System.IO.FileInfo(filePath).Length;
+                    if (fileSize > maxLength)
+                    {
+                        await DiffText.ViewChangesAsync(null, " Viewing Unity files larger than 5 MB is not supported.");
+                        return;
+                    }
+                }
+            }
+
             await DiffText.ViewChangesAsync(DiffFiles.SelectedItem,
                 openWithDiffTool: () => firstToSelectedToolStripMenuItem.PerformClick());
+
+            bool IsUnityFile()
+            {
+                if (DiffFiles.SelectedItem == null || DiffFiles.SelectedItem.Item == null)
+                {
+                    return false;
+                }
+
+                var fileExtention = Path.GetExtension(DiffFiles.SelectedItem.Item.Name);
+                if (fileExtention == ".unity")
+                {
+                    return true;
+                }
+
+                return false;
+            }
         }
 
         private void DiffFiles_SelectedIndexChanged(object sender, EventArgs e)
