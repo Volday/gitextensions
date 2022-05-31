@@ -96,8 +96,16 @@ namespace GitUI
                 return fileViewer.ViewRangeDiffAsync(filename, output ?? defaultText);
             }
 
-            string selectedPatch = GetSelectedPatch(fileViewer, firstId, item.SecondRevision.ObjectId, item.Item)
-                ?? defaultText;
+            string selectedPatch;
+            if (Path.GetExtension(item.Item.Name) == ".unity")
+            {
+                selectedPatch = " Viewing Unity files is not supported.";
+            }
+            else
+            {
+                selectedPatch = GetSelectedPatch(fileViewer, firstId, item.SecondRevision.ObjectId, item.Item)
+                    ?? defaultText;
+            }
 
             return item.Item.IsSubmodule
                 ? fileViewer.ViewTextAsync(item.Item.Name, text: selectedPatch, openWithDifftool: openWithDiffTool)
